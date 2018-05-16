@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>3102 Solutions -- Coffee Machine</title>
+
+<!-- Firebase App is always required and must be first -->
+<script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.15/firebase.js'></script>
+
+<style type="text/css">
+
+body {
+	font-family: "calibri";
+    background: #efefef;
+    padding: 32px;
+    padding-top: 16px;
+    color: #333;
+
+}
+#jsalarmclock{
+	font-family: Tahoma;
+	font-weight: bold;
+	font-size: 18px;
+}
+
+#jsalarmclock div{
+	margin-bottom: 0.8em;
+}
+
+#jsalarmclock div.leftcolumn{
+	float: left;
+	width: 150px;
+	font-size: 18px;
+	clear: left;
+}
+
+#jsalarmclock span{
+	margin-right: 5px;
+}
+
+.button_menu {
+  width: 100px;
+  height: 28px;
+  background-color: buttonface;
+  border: 1px solid red;
+  border-radius: 10px;
+  color: blue;
+  font-size:18px;
+}
+
+.select_menu {
+  width: 100px;
+  height: 28px;
+  background-color: buttonface;
+  border: 1px solid red;
+  border-radius: 10px;
+  color: red;
+}
+
+.text_menu {
+ width: 400px;
+  height: 28px;
+  background-color: buttonface;
+  border: 1px solid red;
+  border-radius: 10px;
+  color: blue;
+}
+
+</style>
+<script type="text/javascript">
+
+var mfirebase = new Firebase('https://android-e034d.firebaseio.com/Users/pZVz2vkJBkQoStFxTPMxopWLBEJ3');
+
+var jsalarm={
+	padfield:function(f){
+		return (f<10)? "0"+f : f
+	},
+	showcurrenttime:function(){
+		var dateobj=new Date()
+		var ct=this.padfield(dateobj.getHours())+":"+this.padfield(dateobj.getMinutes())+":"+this.padfield(dateobj.getSeconds())
+		this.ctref.innerHTML=ct
+		this.ctref.setAttribute("title", ct)
+		if (typeof this.hourwake!="undefined"){ //if alarm is set
+			if (this.ctref.title==(this.hourwake+":"+this.minutewake+":"+this.secondwake)){
+				clearInterval(jsalarm.timer)
+				window.location=document.getElementById("musicloc").value
+				mfirebase.set({coffeeMaker: 1});
+
+				setTimeout(function() {
+                //your code to be executed after 3 minutes
+				mfirebase.set({coffeeMaker: 2});
+				}, 3 * 60 * 1000);
+
+			}
+		}
+	},
+	init:function(){
+		var dateobj=new Date()
+		this.ctref=document.getElementById("alarm_alarm")
+		this.submitref=document.getElementById("submit_submit")
+		this.submitref.onclick=function(){
+			jsalarm.setalarm()
+			this.value="Alarm Set"
+			this.disabled=true
+			return false
+		}
+		this.resetref=document.getElementById("reset_reset")
+		this.resetref.onclick=function(){
+		jsalarm.submitref.disabled=false
+		jsalarm.hourwake=undefined
+		jsalarm.hourselect.disabled=false
+		jsalarm.minuteselect.disabled=false
+		jsalarm.secondselect.disabled=false
+		return false
+		}
+		var selections=document.getElementsByTagName("select")
+		this.hourselect=selections[0]
+		this.minuteselect=selections[1]
+		this.secondselect=selections[2]
+		for (var i=0; i<60; i++){
+			if (i<24) //If still within range of hours field: 0-23
+			this.hourselect[i]=new Option(this.padfield(i), this.padfield(i), false, dateobj.getHours()==i)
+			this.minuteselect[i]=new Option(this.padfield(i), this.padfield(i), false, dateobj.getMinutes()==i)
+			this.secondselect[i]=new Option(this.padfield(i), this.padfield(i), false, dateobj.getSeconds()==i)
+		}
+		jsalarm.showcurrenttime()
+		jsalarm.timer=setInterval(function(){jsalarm.showcurrenttime()}, 1000)
+	},
+	setalarm:function(){
+		this.hourwake=this.hourselect.options[this.hourselect.selectedIndex].value
+		this.minutewake=this.minuteselect.options[this.minuteselect.selectedIndex].value
+		this.secondwake=this.secondselect.options[this.secondselect.selectedIndex].value
+		this.hourselect.disabled=true
+		this.minuteselect.disabled=true
+		this.secondselect.disabled=true
+
+		mfirebase.set({coffeeMaker: 3});
+
+	}
+}
+</script>
+
+</style>
+
+</head>
+
+<body>
+
+<form action="" method="">
+<div id="jsalarmclock">
+
+	<div>
+	<div class="leftcolumn">Current Time</div> <br/> <br/>
+	<span id="alarm_alarm" style="letter-spacing: 2px  font-size: 16px;"></span>
+	<hr/>
+	</div>
+	<div>
+	<div class="leftcolumn">Set Alarm:</div> <br/><br/><br/>
+	<span><select class="select_menu"></select> Hour</span> <br/><br/>
+	<span><select class="select_menu"></select> Minutes</span> <br/><br/>
+	<span><select class="select_menu"></select> Seconds</span><br/><br/>
+	<hr/>
+	</div>
+	
+	<div>
+	<div class="leftcolumn">Set Alarm Action</div><br/><br/>
+	<input type="text" class="text_menu" id="musicloc" size="40" value="" /> 
+	<span style="font: normal 11px Tahoma">
+	<p style="color: blue; font-size: 15px; font-weight: bold;">Location of page to launch</p>
+	</span>
+	<hr/>
+	</div>
+	
+	<input type="submit" class="button_menu" value="Set Alarm!" id="submit_submit" /> 
+	<input type="reset" class="button_menu" value="reset" id="reset_reset" />
+
+</div>
+</form>
+
+
+<script type="text/javascript">
+jsalarm.init()
+</script>
+
+</body>
+</html>
