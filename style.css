@@ -32,8 +32,8 @@ a {
 
 /* section 1 */
 .section-1 {
-    padding-top: 40vh;
-    padding-left: 20vw;
+    /* padding-top: 40vh; */
+    /* padding-left: 20vw; */
     text-align: center;
 }
 
@@ -55,8 +55,9 @@ a {
 
 /* section 2 */
 .section-2 {
-    padding-top: 20vh;
-    width: 70%;
+    padding-top: 5vh;
+    width: 100%;
+    padding-right:15px;
 }
 
 .section-2 h2 {
