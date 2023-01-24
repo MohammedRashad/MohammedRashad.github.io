@@ -19,7 +19,9 @@ body {
 body::before {
   content: "";
   position: fixed;
-  background: #040404 url("../img/bg-modified.jpeg") top right no-repeat;
+  background: url("../img/bg-modified.jpeg") top right no-repeat;
+  box-shadow: inset 0 0 0 1000px rgba(0,0,0,0.35);
+
   background-size: cover;
   left: 0;
   right: 0;
